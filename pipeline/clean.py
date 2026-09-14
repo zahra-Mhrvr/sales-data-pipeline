@@ -64,6 +64,10 @@ def normalize_text_columns(df: pd.DataFrame) -> pd.DataFrame:
     df.loc[df["region"] == "Nan", "region"] = pd.NA
 
     df["product"] = df["product"].astype(str).str.strip().str.title()
+    # .title() turns "USB-C Cable" into "Usb-C Cable", which looks like a typo
+    # in every report it ends up in. Patch known acronyms back up.
+    df["product"] = df["product"].str.replace("Usb-C", "USB-C", regex=False)
+    df["product"] = df["product"].str.replace("12Pk", "12pk", regex=False)
     df["category"] = df["category"].astype(str).str.strip().str.title()
 
     return df
